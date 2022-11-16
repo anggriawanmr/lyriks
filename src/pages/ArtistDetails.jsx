@@ -8,53 +8,25 @@ import { useGetArtistDetailsQuery } from '../redux/services/shazamCore';
 const ArtistDetails = () => {
   const { id: artistId } = useParams();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
-  const { data: songData, isFetching: isFetchingSongDetails } =
-    useGetSongDetailsQuery({ songid });
   const {
-    data,
-    isFetching: isFetchingRelatedSongs,
+    data: artistData,
+    isFetching: isFetchingArtistDetails,
     error,
-  } = useGetSongRelatedQuery({ songid });
+  } = useGetArtistDetailsQuery(artistId);
 
-  if (isFetchingSongDetails || isFetchingRelatedSongs)
-    return <Loader title="Searching song details" />;
+  if (isFetchingArtistDetails) return <Loader title="Loading artist details" />;
 
   if (error) return <Error />;
 
-  const handlePauseClick = () => {
-    dispatch(playPause(false));
-  };
-
-  const handlePlayClick = (song, i) => {
-    dispatch(setActiveSong({ song, data, i }));
-    dispatch(playPause(true));
-  };
-
   return (
     <div className="flex flex-col ">
-      <DetailsHeader artistid="" songData={songData} />
-
-      <div className="mb-10">
-        <h2 className="text-white text-3xl font-bold">Lyrics:</h2>
-        <div className="mt-5">
-          {songData?.sections[1].type === 'LYRICS' ? (
-            songData?.sections[1].text.map((line, i) => (
-              <p className="text-gray-400 text-base my-1">{line}</p>
-            ))
-          ) : (
-            <p className="text-gray-400 text-base my-1">
-              Sorry, no lyrics found!
-            </p>
-          )}
-        </div>
-      </div>
+      <DetailsHeader artistId={artistId} artistData={artistData} />
 
       <RelatedSongs
-        data={data}
+        data={Object.values(artistData?.songs)}
+        artistId={artistId}
         isPlaying={isPlaying}
         activeSong={activeSong}
-        handlePauseClick={handlePauseClick}
-        handlePlayClick={handlePlayClick}
       />
     </div>
   );
