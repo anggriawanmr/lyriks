@@ -34,13 +34,6 @@ const App = () => {
             </Routes>
           </div>
           <div className="xl:sticky relative top-0 h-fit">
-            {/* <a
-              href="http://www.microsoft.com"
-              target="_blank"
-              onclick={window.open('https://www.google.com/')}
-            >
-              Click Here
-            </a> */}
             <TopPlay />
           </div>
         </div>
